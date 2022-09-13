@@ -1,13 +1,16 @@
 package it.polito.tdp.itunes.model;
 
-public class Album {
+public class Album implements Comparable<Album>{
 	private Integer albumId;
 	private String title;
+	private double prezzo;
+	private double bilancio;
 	
-	public Album(Integer albumId, String title) {
+	public Album(Integer albumId, String title, double prezzo) {
 		super();
 		this.albumId = albumId;
 		this.title = title;
+		this.prezzo = prezzo;
 	}
 
 	public Integer getAlbumId() {
@@ -24,6 +27,22 @@ public class Album {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public double getPrezzo() {
+		return prezzo;
+	}
+
+	public void setPrezzo(double prezzo) {
+		this.prezzo = prezzo;
+	}
+
+	public double getBilancio() {
+		return bilancio;
+	}
+
+	public void setBilancio(double bilancio) {
+		this.bilancio = bilancio;
 	}
 
 	@Override
@@ -54,6 +73,11 @@ public class Album {
 	@Override
 	public String toString() {
 		return title;
+	}
+
+	@Override
+	public int compareTo(Album o) {
+		return -(int)(this.bilancio*1000 - o.getBilancio()*1000);
 	}
 	
 	

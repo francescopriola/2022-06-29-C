@@ -16,25 +16,25 @@ import it.polito.tdp.itunes.model.Track;
 
 public class ItunesDAO {
 	
-	public List<Album> getAllAlbums(){
-		final String sql = "SELECT * FROM Album";
-		List<Album> result = new LinkedList<>();
-		
-		try {
-			Connection conn = DBConnect.getConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
-			ResultSet res = st.executeQuery();
-
-			while (res.next()) {
-				result.add(new Album(res.getInt("AlbumId"), res.getString("Title")));
-			}
-			conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new RuntimeException("SQL Error");
-		}
-		return result;
-	}
+//	public List<Album> getAllAlbums(){
+//		final String sql = "SELECT * FROM Album";
+//		List<Album> result = new LinkedList<>();
+//		
+//		try {
+//			Connection conn = DBConnect.getConnection();
+//			PreparedStatement st = conn.prepareStatement(sql);
+//			ResultSet res = st.executeQuery();
+//
+//			while (res.next()) {
+//				result.add(new Album(res.getInt("AlbumId"), res.getString("Title")));
+//			}
+//			conn.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			throw new RuntimeException("SQL Error");
+//		}
+//		return result;
+//	}
 	
 	public List<Artist> getAllArtists(){
 		final String sql = "SELECT * FROM Artist";
@@ -139,5 +139,29 @@ public class ItunesDAO {
 		return result;
 	}
 	
+	public List<Album> getVertex(int n){
+		final String sql = "SELECT a.`AlbumId` as a, a.title as t, SUM(t.`UnitPrice`) as p "
+				+ "FROM album a, track t "
+				+ "WHERE a.`AlbumId` = t.`AlbumId` "
+				+ "GROUP BY a.`AlbumId`, a.title "
+				+ "HAVING SUM(t.`UnitPrice`) > ?";
+		List<Album> result = new LinkedList<>();
+		
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, n);
+			ResultSet res = st.executeQuery();
+
+			while (res.next()) {
+				result.add(new Album(res.getInt("a"), res.getString("t"), res.getDouble("p")));
+			}
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("SQL Error");
+		}
+		return result;
+	}
 	
 }
